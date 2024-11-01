@@ -1,4 +1,8 @@
 fastapi
 uvicorn
-psutil 
-websockets
+redis
+icmplib
+psutil
+pydantic
+pydantic-settings
+python-dotenv
