@@ -1,6 +1,7 @@
 # mise 
 mise
 config.sh
+network_monitor.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

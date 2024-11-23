@@ -14,7 +14,7 @@ Real-time network monitoring solution with performance tracking and route analys
 
 ## Tech Stack
 
-- Python 3.9+
+- Python 3.11+
 - FastAPI
 - SQLite
 - Redis
@@ -111,3 +111,35 @@ Once running, visit:
 
 - API docs: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
+
+# Database Documentation
+
+## SQLite Structure
+
+### Networks Table
+
+```sql
+networks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Unique identifier
+    name TEXT NOT NULL,                    -- Network name (e.g., "Office WiFi")
+    alias TEXT NOT NULL,                   -- Custom name (e.g., "Office WiFi - Floor 3")
+    location TEXT,                         -- Physical location (e.g., "Building A, Floor 3")
+    created_at DATETIME                    -- Registration timestamp
+)
+```
+
+### Network Metrics Table
+
+```sql
+network_metrics (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Unique identifier
+    network_id INTEGER,                    -- Reference to networks table
+    upload_speed REAL,                     -- Upload speed in Mbps
+    download_speed REAL,                   -- Download speed in Mbps
+    latency REAL,                         -- Latency in ms
+    packet_loss REAL,                     -- Packet loss percentage
+    connection_type INTEGER,              -- 0: Ethernet, 1: WiFi
+    timestamp DATETIME,                    -- Measurement timestamp
+    FOREIGN KEY (network_id) REFERENCES networks(id)
+)
+```

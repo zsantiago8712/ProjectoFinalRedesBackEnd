@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS network_metrics (
     download_speed REAL,
     latency REAL,
     packet_loss REAL,
+    connection_type INTEGER,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (network_id) REFERENCES networks(id)
 );
