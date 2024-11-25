@@ -1,6 +1,6 @@
 import psutil
 from app.core.enums import ConnectionType
-
+# todo: Manejar de forma mejor esto, ya que no distingue entre WiFi y Ethernet
 def get_connection_type() -> ConnectionType:
     """
     Detecta el tipo de conexión de red actual.
