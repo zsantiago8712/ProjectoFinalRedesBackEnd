@@ -7,6 +7,8 @@ from app.core.enums import ConnectionType
 from app.utils.network import get_connection_type, get_interface_info
 from app.schemas import models
 import redis
+import psutil
+import time
 
 class NetworkMonitor:
     def __init__(self, network_id: int):
@@ -38,6 +40,19 @@ class NetworkMonitor:
             self.st.get_best_server()
             download_speed = self.st.download() / 1_000_000  # Convert to Mbps
             upload_speed = self.st.upload() / 1_000_000  # Convert to Mbps
+            return upload_speed, download_speed
+        except Exception as e:
+            print(f"speedtest failed: {e}")
+        
+        
+        try:
+            # Opción 2: Métricas del sistema con psutil
+            print("Trying psutil...")
+            net_before = psutil.net_io_counters()
+            time.sleep(1)  # Intervalo de 1 segundo para calcular la velocidad
+            net_after = psutil.net_io_counters()
+            download_speed = (net_after.bytes_recv - net_before.bytes_recv) / (1024 * 1024)  # Mbps
+            upload_speed = (net_after.bytes_sent - net_before.bytes_sent) / (1024 * 1024)    # Mbps
             return upload_speed, download_speed
         except Exception as e:
             return 0.0, 0.0
@@ -112,3 +127,23 @@ class NetworkMonitor:
     def get_historical_metrics(self, redis_client: redis.Redis, limit: int = 100):
         """Obtiene métricas históricas de Redis"""
         return self._get_metrics_from_redis(redis_client, limit)
+    
+    def test_connection(self):
+        try:
+            upload_speed, download_speed = self.measure_speed()
+            latency = self.measure_latency()
+            metric_data = {
+                "upload_speed": upload_speed,
+                "download_speed": download_speed,
+                "latency": latency,
+            }
+            return metric_data
+        except Exception as e:
+            print(f"speedtest failed: {e}")
+            metric_data = {
+                "upload_speed": 0.0,
+                "download_speed": 0.0,
+                "latency": 0.0,
+            }
+            
+            return metric_data

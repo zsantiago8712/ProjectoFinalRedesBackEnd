@@ -73,6 +73,15 @@ def get_historical_metrics(
 
 
 
+@router.get("/networks/metrics/testing")
+def get_testing_metrics():
+    monitor = NetworkMonitor(-1)
+    metrics = monitor.test_connection()
+    if not metrics:
+        raise HTTPException(status_code=404, detail="No realtime data available")
+    return metrics
+
+
 
 
 @router.get("/networks/{network_id}/realtime")
